@@ -12,12 +12,38 @@
 #include <regex.h>
 #include "token.h"
 
-#define MAX_IDENTIFIER_LENGTH 11
-#define MAX_NUMBER_LENGTH 5
 #define MAX_BUFFER_LENGTH 1000
+#define INITIAL_CAPACITY 10
 
 FILE *input_file;
 FILE *output_file;
+
+typedef struct {
+    Token *tokens;
+    int size;
+    int capacity;
+} TokenList;
+
+TokenList *create_token_list() {
+    TokenList *list = (TokenList *)malloc(sizeof(TokenList));
+    list->size = 0;
+    list->capacity = INITIAL_CAPACITY;
+    list->tokens = (Token *)malloc(sizeof(Token) * list->capacity);
+    return list;
+}
+
+void add_token(TokenList *list, Token token) {
+    if (list->size >= list->capacity) {
+        list->capacity *= 2;
+        list->tokens = (Token *)realloc(list->tokens, sizeof(Token) * list->capacity);
+    }
+    list->tokens[list->size++] = token;
+}
+
+void free_token_list(TokenList *list) {
+    free(list->tokens);
+    free(list);
+}
 
 // Peek at the next character from the input file without consuming it
 char peekc() {
@@ -98,8 +124,51 @@ void lexicalAnalysis(const char *input_filename, const char *output_filename) {
     print_source_code();
     print_both("\n");
 
-    // Test regex pattern matching
-    test_regex();
+    TokenList *token_list = create_token_list();
+    Token token;
+    char c;
+
+    // Sample tokenization logic (this will be expanded in the next steps)
+    while ((c = fgetc(input_file)) != EOF) {
+        if (isspace(c)) {
+            continue;
+        } else if (isalpha(c)) {
+            // Handle identifiers and reserved words
+            int i = 0;
+            while (isalnum(c) && i < MAX_IDENTIFIER_LENGTH) {
+                token.lexeme[i++] = c;
+                c = fgetc(input_file);
+            }
+            ungetc(c, input_file);
+            token.lexeme[i] = '\0';
+            token.type = identsym; // This is just a placeholder
+            add_token(token_list, token);
+        } else if (isdigit(c)) {
+            // Handle numbers
+            int i = 0;
+            while (isdigit(c) && i < MAX_NUMBER_LENGTH) {
+                token.lexeme[i++] = c;
+                c = fgetc(input_file);
+            }
+            ungetc(c, input_file);
+            token.lexeme[i] = '\0';
+            token.type = numbersym; // This is just a placeholder
+            add_token(token_list, token);
+        } else {
+            // Handle special symbols
+            token.lexeme[0] = c;
+            token.lexeme[1] = '\0';
+            token.type = skipsym; // This is just a placeholder
+            add_token(token_list, token);
+        }
+    }
+
+    // Print tokens for debugging
+    for (int i = 0; i < token_list->size; i++) {
+        print_both("Token: %s, Type: %d\n", token_list->tokens[i].lexeme, token_list->tokens[i].type);
+    }
+
+    free_token_list(token_list);
 
     fclose(input_file);
     fclose(output_file);

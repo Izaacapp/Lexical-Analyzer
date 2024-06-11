@@ -5,3 +5,23 @@ begin
     x := y + 56;
 end.
 
+Token: var, Type: 2
+Token: x, Type: 2
+Token: ,, Type: 1
+Token: y, Type: 2
+Token: ;, Type: 1
+Token: begin, Type: 2
+Token: y, Type: 2
+Token: :, Type: 1
+Token: =, Type: 1
+Token: 3, Type: 3
+Token: ;, Type: 1
+Token: x, Type: 2
+Token: :, Type: 1
+Token: =, Type: 1
+Token: y, Type: 2
+Token: +, Type: 1
+Token: 56, Type: 3
+Token: ;, Type: 1
+Token: end, Type: 2
+Token: ., Type: 1
