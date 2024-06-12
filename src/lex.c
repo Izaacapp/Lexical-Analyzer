@@ -77,33 +77,76 @@ void print_source_code() {
     rewind(input_file); // Reset file pointer to the beginning of the file
 }
 
-// Test regex pattern matching
-void test_regex() {
-    regex_t regex;
-    int reti;
+int handle_reserved_word(char *buffer) {
+    if (strcmp(buffer, "const") == 0)
+        return constsym;
+    else if (strcmp(buffer, "var") == 0)
+        return varsym;
+    else if (strcmp(buffer, "procedure") == 0)
+        return procsym;
+    else if (strcmp(buffer, "call") == 0)
+        return callsym;
+    else if (strcmp(buffer, "begin") == 0)
+        return beginsym;
+    else if (strcmp(buffer, "end") == 0)
+        return endsym;
+    else if (strcmp(buffer, "if") == 0)
+        return ifsym;
+    else if (strcmp(buffer, "then") == 0)
+        return thensym;
+    else if (strcmp(buffer, "else") == 0)
+        return elsesym;
+    else if (strcmp(buffer, "while") == 0)
+        return whilesym;
+    else if (strcmp(buffer, "do") == 0)
+        return dosym;
+    else if (strcmp(buffer, "read") == 0)
+        return readsym;
+    else if (strcmp(buffer, "write") == 0)
+        return writesym;
+    return 0; // invalid reserved word
+}
 
-    // Compile regular expression
-    reti = regcomp(&regex, "^[a-zA-Z_][a-zA-Z0-9_]*$", REG_EXTENDED);
-    if (reti) {
-        fprintf(stderr, "Could not compile regex\n");
-        exit(1);
-    }
+int handle_special_symbol(char *buffer) {
+    if (strcmp(buffer, "+") == 0)
+        return plussym;
+    else if (strcmp(buffer, "-") == 0)
+        return minussym;
+    else if (strcmp(buffer, "*") == 0)
+        return multsym;
+    else if (strcmp(buffer, "/") == 0)
+        return slashsym;
+    else if (strcmp(buffer, "(") == 0)
+        return lparentsym;
+    else if (strcmp(buffer, ")") == 0)
+        return rparentsym;
+    else if (strcmp(buffer, ",") == 0)
+        return commasym;
+    else if (strcmp(buffer, ";") == 0)
+        return semicolonsym;
+    else if (strcmp(buffer, ".") == 0)
+        return periodsym;
+    else if (strcmp(buffer, "=") == 0)
+        return eqlsym;
+    else if (strcmp(buffer, "<") == 0)
+        return lessym;
+    else if (strcmp(buffer, ">") == 0)
+        return gtrsym;
+    else if (strcmp(buffer, ":=") == 0)
+        return becomessym;
+    else if (strcmp(buffer, "<=") == 0)
+        return leqsym;
+    else if (strcmp(buffer, ">=") == 0)
+        return geqsym;
+    else if (strcmp(buffer, "<>") == 0)
+        return neqsym;
+    return 0; // invalid special symbol
+}
 
-    // Execute regular expression
-    reti = regexec(&regex, "test_identifier", 0, NULL, 0);
-    if (!reti) {
-        puts("Match");
-    } else if (reti == REG_NOMATCH) {
-        puts("No match");
-    } else {
-        char msgbuf[100];
-        regerror(reti, &regex, msgbuf, sizeof(msgbuf));
-        fprintf(stderr, "Regex match failed: %s\n", msgbuf);
-        exit(1);
-    }
-
-    // Free compiled regular expression if you want to use the regex_t again
-    regfree(&regex);
+// Check if a given character is a special symbol
+int is_special_symbol(char c) {
+    return (c == '+' || c == '-' || c == '*' || c == '/' || c == '(' || c == ')' ||
+            c == '=' || c == ',' || c == '.' || c == '<' || c == '>' || c == ':' || c == ';');
 }
 
 void lexicalAnalysis(const char *input_filename, const char *output_filename) {
@@ -127,49 +170,109 @@ void lexicalAnalysis(const char *input_filename, const char *output_filename) {
     TokenList *token_list = create_token_list();
     Token token;
     char c;
+    char buffer[MAX_BUFFER_LENGTH + 1] = {0};
+    int buffer_index = 0;
 
-    // Sample tokenization logic (this will be expanded in the next steps)
     while ((c = fgetc(input_file)) != EOF) {
         if (isspace(c)) {
             continue;
         } else if (isalpha(c)) {
-            // Handle identifiers and reserved words
-            int i = 0;
-            while (isalnum(c) && i < MAX_IDENTIFIER_LENGTH) {
-                token.lexeme[i++] = c;
-                c = fgetc(input_file);
+            buffer[buffer_index++] = c;
+            while (1) {
+                char nextc = peekc();
+                if (isspace(nextc) || is_special_symbol(nextc) || nextc == EOF) {
+                    int token_value = handle_reserved_word(buffer);
+                    if (token_value) {
+                        token.type = token_value;
+                        strcpy(token.lexeme, buffer);
+                    } else {
+                        if (buffer_index > MAX_IDENTIFIER_LENGTH) {
+                            print_both("%10s %20s\n", buffer, "ERROR: IDENTIFIER TOO LONG");
+                            token.type = skipsym;
+                        } else {
+                            token.type = identsym;
+                            strcpy(token.lexeme, buffer);
+                        }
+                    }
+                    add_token(token_list, token);
+                    buffer_index = 0;
+                    memset(buffer, 0, sizeof(buffer));
+                    break;
+                } else if (isalnum(nextc)) {
+                    c = getc(input_file);
+                    buffer[buffer_index++] = c;
+                }
             }
-            ungetc(c, input_file);
-            token.lexeme[i] = '\0';
-            token.type = identsym; // This is just a placeholder
-            add_token(token_list, token);
         } else if (isdigit(c)) {
-            // Handle numbers
-            int i = 0;
-            while (isdigit(c) && i < MAX_NUMBER_LENGTH) {
-                token.lexeme[i++] = c;
-                c = fgetc(input_file);
+            buffer[buffer_index++] = c;
+            while (1) {
+                char nextc = peekc();
+                if (isspace(nextc) || is_special_symbol(nextc) || nextc == EOF) {
+                    if (buffer_index > MAX_NUMBER_LENGTH) {
+                        print_both("%10s %20s\n", buffer, "ERROR: NUMBER TOO LONG");
+                        token.type = skipsym;
+                    } else {
+                        token.type = numbersym;
+                        strcpy(token.lexeme, buffer);
+                    }
+                    add_token(token_list, token);
+                    buffer_index = 0;
+                    memset(buffer, 0, sizeof(buffer));
+                    break;
+                } else if (isdigit(nextc)) {
+                    c = getc(input_file);
+                    buffer[buffer_index++] = c;
+                }
             }
-            ungetc(c, input_file);
-            token.lexeme[i] = '\0';
-            token.type = numbersym; // This is just a placeholder
-            add_token(token_list, token);
-        } else {
-            // Handle special symbols
-            token.lexeme[0] = c;
-            token.lexeme[1] = '\0';
-            token.type = skipsym; // This is just a placeholder
-            add_token(token_list, token);
-        }
-    }
+        } else if (is_special_symbol(c)) {
+            buffer[buffer_index++] = c;
+            char nextc = peekc();
 
-    // Print tokens for debugging
-    for (int i = 0; i < token_list->size; i++) {
-        print_both("Token: %s, Type: %d\n", token_list->tokens[i].lexeme, token_list->tokens[i].type);
-    }
+            if (is_special_symbol(next c)) {
+          c = getc(input_file);
+buffer[buffer_index++] = c;
+int token_value = handle_special_symbol(buffer);
+if (!token_value) {
+for (int i = 0; i < buffer_index; i++) {
+print_both(”%10c %20s\n”, buffer[i], “ERROR: INVALID SYMBOL”);
+token.type = skipsym;
+add_token(token_list, token);
+}
+} else {
+token.type = token_value;
+strcpy(token.lexeme, buffer);
+add_token(token_list, token);
+}
+buffer_index = 0;
+memset(buffer, 0, sizeof(buffer));
+} else {
+int token_value = handle_special_symbol(buffer);
+if (!token_value) {
+print_both(”%10c %20s\n”, c, “ERROR: INVALID SYMBOL”);
+token.type = skipsym;
+} else {
+token.type = token_value;
+strcpy(token.lexeme, buffer);
+}
+add_token(token_list, token);
+buffer_index = 0;
+memset(buffer, 0, sizeof(buffer));
+}
+}
+}
 
-    free_token_list(token_list);
+print_both("\nLexeme Table:\n");
+for (int i = 0; i < token_list->size; i++) {
+    print_both("%10s %20d\n", token_list->tokens[i].lexeme, token_list->tokens[i].type);
+}
 
-    fclose(input_file);
-    fclose(output_file);
+print_both("\nToken List:\n");
+for (int i = 0; i < token_list->size; i++) {
+    print_both("%d %s ", token_list->tokens[i].type, token_list->tokens[i].lexeme);
+}
+
+free_token_list(token_list);
+
+fclose(input_file);
+fclose(output_file);
 }
