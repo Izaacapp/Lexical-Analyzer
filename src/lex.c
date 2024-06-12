@@ -228,40 +228,40 @@ void lexicalAnalysis(const char *input_filename, const char *output_filename) {
             buffer[buffer_index++] = c;
             char nextc = peekc();
 
-            if (is_special_symbol(next c)) {
-          c = getc(input_file);
-buffer[buffer_index++] = c;
-int token_value = handle_special_symbol(buffer);
-if (!token_value) {
-for (int i = 0; i < buffer_index; i++) {
-print_both(”%10c %20s\n”, buffer[i], “ERROR: INVALID SYMBOL”);
-token.type = skipsym;
-add_token(token_list, token);
-}
-} else {
-token.type = token_value;
-strcpy(token.lexeme, buffer);
-add_token(token_list, token);
-}
-buffer_index = 0;
-memset(buffer, 0, sizeof(buffer));
-} else {
-int token_value = handle_special_symbol(buffer);
-if (!token_value) {
-print_both(”%10c %20s\n”, c, “ERROR: INVALID SYMBOL”);
-token.type = skipsym;
-} else {
-token.type = token_value;
-strcpy(token.lexeme, buffer);
-}
-add_token(token_list, token);
-buffer_index = 0;
-memset(buffer, 0, sizeof(buffer));
-}
-}
-}
+            if (is_special_symbol(nextc)) {
+                c = getc(input_file);
+                buffer[buffer_index++] = c;
+                int token_value = handle_special_symbol(buffer);
+                if (!token_value) {
+                    for (int i = 0; i < buffer_index; i++) {
+                        print_both("%10c %20s\n", buffer[i], "ERROR: INVALID SYMBOL");
+                        token.type = skipsym;
+                        add_token(token_list, token);
+                    }
+                } else {
+                    token.type = token_value;
+                    strcpy(token.lexeme, buffer);
+                    add_token(token_list, token);
+                }
+                buffer_index = 0;
+                memset(buffer, 0, sizeof(buffer));
+            } else {
+                int token_value = handle_special_symbol(buffer);
+                if (!token_value) {
+                    print_both("%10c %20s\n", c, "ERROR: INVALID SYMBOL");
+                    token.type = skipsym;
+                } else {
+                    token.type = token_value;
+                    strcpy(token.lexeme, buffer);
+                }
+                add_token(token_list, token);
+                buffer_index = 0; 
+                memset(buffer, 0, sizeof(buffer));
+            }
+        }
+    }
 
-print_both("\nLexeme Table:\n");
+   print_both("\nLexeme Table:\n");
 for (int i = 0; i < token_list->size; i++) {
     print_both("%10s %20d\n", token_list->tokens[i].lexeme, token_list->tokens[i].type);
 }
@@ -275,4 +275,4 @@ free_token_list(token_list);
 
 fclose(input_file);
 fclose(output_file);
-}
+} 
