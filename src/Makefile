@@ -1,18 +1,17 @@
 CC = gcc
-CFLAGS = -Wall -Wextra
+CFLAGS = -Wall -Wextra -std=c99
+OBJ = main.o lex.o
 
-all: lexical_analyzer
+all: lex
 
-lexical_analyzer: lex.o main.o
-	$(CC) $(CFLAGS) -o lexical_analyzer lex.o main.o
-
-lex.o: lex.c token.h
-	$(CC) $(CFLAGS) -c lex.c
+lex: $(OBJ)
+	$(CC) $(CFLAGS) -o lex $(OBJ)
 
 main.o: main.c token.h
 	$(CC) $(CFLAGS) -c main.c
 
-clean:
-	rm -f *.o lexical_analyzer
+lex.o: lex.c token.h
+	$(CC) $(CFLAGS) -c lex.c
 
-.PHONY: all clean
+clean:
+	rm -f *.o lex
