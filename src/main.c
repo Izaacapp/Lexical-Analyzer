@@ -4,6 +4,7 @@
 
 FILE *input_file;
 FILE *output_file;
+token_list *tokens; // Declare tokens here
 
 void print_to_both(const char *format, ...) {
     va_list args;

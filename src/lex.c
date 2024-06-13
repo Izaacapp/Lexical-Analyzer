@@ -34,7 +34,7 @@ int is_reserved_word(char *buffer) {
     return 0;
 }
 
-int is_special_symbol(char *buffer) {
+int get_special_symbol_token(char *buffer) {
     if (strcmp(buffer, "+") == 0) return plussym;
     if (strcmp(buffer, "-") == 0) return minussym;
     if (strcmp(buffer, "*") == 0) return multsym;
@@ -90,14 +90,16 @@ void print_lexeme_table(token_list *list) {
 
 void print_token_list(token_list *list) {
     for (int i = 0; i < list->size; i++) {
-        printf("%s ", list->tokens[i].value);
         char id_val[3] = {0}, num_val[3] = {0};
         sprintf(id_val, "%d", identsym);
         sprintf(num_val, "%d", numbersym);
 
         if (strcmp(list->tokens[i].value, id_val) == 0 || strcmp(list->tokens[i].value, num_val) == 0)
-            printf("%s ", list->tokens[i].lexeme);
+            printf("%s %s ", list->tokens[i].value, list->tokens[i].lexeme);
+        else
+            printf("%s ", list->tokens[i].value);
     }
+    printf("\n");  // Ensure newline after the token list
 }
 
 void tokenize() {
@@ -116,7 +118,7 @@ void tokenize() {
                 if (isspace(nextc) || is_special_character(nextc)) {
                     token tok;
                     if (buffer_index > MAX_NUMBER_LENGTH) {
-                        printf("%10s %20s\n", buffer, "ERROR: NUMBER TOO LONG");
+                        printf("%10s %20s\n", buffer, "Error: number too long");
                     } else {
                         printf("%10s %20d\n", buffer, numbersym);
                         sprintf(tok.value, "%d", numbersym);
@@ -160,7 +162,7 @@ void tokenize() {
                     } else {
                         token tok;
                         if (buffer_index > MAX_IDENTIFIER_LENGTH) {
-                            printf("%10s %20s\n", buffer, "ERROR: IDENTIFIER TOO LONG");
+                            printf("%10s %20s\n", buffer, "Error: name too long");
                         } else {
                             printf("%10s %20d\n", buffer, identsym);
                             sprintf(tok.value, "%d", identsym);
@@ -211,10 +213,10 @@ void tokenize() {
                 c = getc(input_file);
                 buffer[buffer_index++] = c;
                 token tok;
-                int token_value = is_special_symbol(buffer);
+                int token_value = get_special_symbol_token(buffer);
                 if (!token_value) {
                     for (int i = 0; i < buffer_index; i++)
-                        printf("%10c %20s\n", buffer[i], "ERROR: INVALID SYMBOL");
+                        printf("%10c %20s\n", buffer[i], "Error: invalid character");
                 } else {
                     printf("%10s %20d\n", buffer, token_value);
                     sprintf(tok.value, "%d", token_value);
@@ -225,9 +227,9 @@ void tokenize() {
                 buffer_index = 0;
             } else {
                 token tok;
-                int token_value = is_special_symbol(buffer);
+                int token_value = get_special_symbol_token(buffer);
                 if (!token_value) {
-                    printf("%10c %20s\n", c, "ERROR: INVALID SYMBOL");
+                    printf("%10c %20s\n", c, "Error: invalid character");
                 } else {
                     printf("%10s %20d\n", buffer, token_value);
                     sprintf(tok.value, "%d", token_value);
