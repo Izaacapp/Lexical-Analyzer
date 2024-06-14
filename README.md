@@ -14,7 +14,7 @@ To execute the lexical analyzer and compare the output with expected results, us
 
 ```bash
 ./lex input.txt > temp_output.txt
-diff temp_output1.txt output.txt
+diff temp_output.txt output.txt
 
 ```
 
@@ -107,7 +107,7 @@ Token List:
 
 ```
 
-## Team Information (if applicable)
+## Team Information 
 Team Member 1: Devon Villalona (de167342@ucf.edu)  
 Team Member 2: Izaac Plambeck (iz596192@ucf.edu)
 
