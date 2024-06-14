@@ -1,7 +1,7 @@
 ## Homework #2 (Lexical Analyzer)
 
 ## Description
-This project implements a lexical analyzer. The analyzer reads a source program written in PL/0, identifies lexical errors, and produces as output the source program, a lexeme table, and a token list. It handles reserved words, special symbols, identifiers, numbers, and detects errors such as overly long names or numbers, and invalid symbols.
+The goal of this project is to develop a lexical analyzer that processes source code, identifies lexical errors, and generates a detailed token list. The analyzer scans the input source file, identifies valid lexemes, classifies them into appropriate tokens, and reports any lexical errors found during the scanning process. This project highlights the essential role of lexical analysis in compiler design, transforming high-level code into a format that can be easily processed by the next stages of compilation.
 
 ## Compilation Instructions
 To compile the lexical analyzer, use the following command:
