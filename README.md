@@ -1,4 +1,4 @@
-### README for Lexical Analyzer Project
+### Lexical Analyzer Project
 
 ---
 
