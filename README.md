@@ -20,8 +20,8 @@ diff temp_output1.txt output.txt
 
 ## Example
 
-#### Input
-**input.txt**:
+#### Input:
+**input.txt**
 ```plaintext
 var x8x8x8x, y;
 : =
@@ -38,8 +38,8 @@ x := y + 56789;
 end.
 ```
 
-#### Output
-**output.txt**:
+#### Output:
+**output.txt**
 ```plaintext
 Source Program:
 var x8x8x8x, y;
