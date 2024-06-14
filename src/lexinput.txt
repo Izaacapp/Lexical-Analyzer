@@ -1,0 +1,30 @@
+const m = 7, n = 85;
+var i,x,y,z,q,r;
+
+  var a, b;
+ begin
+    a := x; b := y; z := 0;
+    while b > 0 do
+    begin
+      if x =1 then z := z+a fi;
+      a := 2*a;
+      b := b/2;
+    end
+  end;
+
+/* Testing example senarios from "HW2 Clarification and Hints" announcement below*/
+
+begin
+
+  x8x8x8x
+ 
+  x : = m;
+  y := n;
+
+  ><<><>>
+  
+  / *not a comment*/
+  
+  /*some content
+
+end.
