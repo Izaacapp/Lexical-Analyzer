@@ -1,17 +1,32 @@
+# Compiler
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c99
-OBJ = main.o lex.o
 
-all: lex
+# Compiler flags
+CFLAGS = -g -Wall -Wextra
 
-lex: $(OBJ)
-	$(CC) $(CFLAGS) -o lex $(OBJ)
+# Executable name
+TARGET = lexer
 
-main.o: main.c token.h
-	$(CC) $(CFLAGS) -c main.c
+# Source files
+SRCS = lex.c main.c
 
-lex.o: lex.c token.h
-	$(CC) $(CFLAGS) -c lex.c
+# Object files
+OBJS = $(SRCS:.c=.o)
 
+# Default target
+all: $(TARGET)
+
+# Rule to create the executable
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS)
+
+# Rule to create object files
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Clean rule to remove compiled files
 clean:
-	rm -f *.o lex
+	rm -f $(TARGET) $(OBJS)
+
+# Phony targets
+.PHONY: all clean

@@ -1,66 +1,51 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "token.h"
+#include <string.h>
+#include "lex.h"
 
-FILE *input_file;
-FILE *output_file;
-token_list *tokens; // Declare tokens here
-
-void print_to_both(const char *format, ...) {
-    va_list args;
-    va_start(args, format);
-    vprintf(format, args);
-    va_end(args);
-
-    va_start(args, format);
-    vfprintf(output_file, format, args);
-    va_end(args);
-}
-
-void print_source_code() {
-    char c;
-    char last_char = 0;
-    while ((c = fgetc(input_file)) != EOF) {
-        print_to_both("%c", c);
-        last_char = c;
-    }
-    if (last_char != '\n')
-        print_to_both("\n");
-    rewind(input_file);
-}
-
-int main(int argc, char *argv[]) {
-    if (argc != 3) {
-        printf("Usage: %s <input file> <output file>\n", argv[0]);
+int main(int argc, char* argv[]) {
+    if (argc != 2) {
+        fprintf(stderr, "Usage: %s <source file>\n", argv[0]);
         return 1;
     }
 
-    input_file = fopen(argv[1], "r");
-    output_file = fopen(argv[2], "w");
-
-    if (input_file == NULL) {
-        printf("Error: Could not open input file %s\n", argv[1]);
+    char* source = read_input(argv[1]);
+    if (source == NULL) {
+        fprintf(stderr, "Error: Unable to read source file\n");
         return 1;
     }
+    
+    Lexeme lexemes[MAX_LEXEMES];
+    Token tokens[MAX_TOKENS];
+    int lexeme_count = 0, token_count = 0;
 
-    if (output_file == NULL) {
-        printf("Error: Could not open output file %s\n", argv[2]);
-        return 1;
+    memset(lexemes, 0, sizeof(lexemes));
+    memset(tokens, 0, sizeof(tokens));
+
+    printf("Source Program:\n%s\n", source);
+
+    lexical_analysis(source, lexemes, tokens, &lexeme_count, &token_count);
+
+    printf("\nLexeme Table:\n\n");
+    printf("lexeme  token type\n");
+    for (int i = 0; i < lexeme_count; i++) {
+        if (lexemes[i].error) {
+            printf("%-12s Error: %s\n", lexemes[i].lexeme, lexemes[i].type == identsym ? "name too long" : lexemes[i].type == numbersym ? "number too long" : "invalid character");
+        } else {
+            printf("%-12s %d\n", lexemes[i].lexeme, lexemes[i].type);
+        }
     }
 
-    print_to_both("Source Program:\n");
-    print_source_code();
-    print_to_both("\nLexeme Table:\n\n%10s %20s\n", "lexeme", "token type");
+    printf("\nToken List:\n");
+    for (int i = 0; i < token_count; i++) {
+        if (tokens[i].type == identsym || tokens[i].type == numbersym) {
+            printf("%d %s ", tokens[i].type, tokens[i].value);
+        } else {
+            printf("%d ", tokens[i].type);
+        }
+    }
+    printf("\n");
 
-    tokens = create_token_list();
-    tokenize();
-
-    print_to_both("\nToken List:\n");
-    print_token_list(tokens);
-    destroy_token_list(tokens);
-
-    fclose(input_file);
-    fclose(output_file);
-
+    free(source);
     return 0;
 }
