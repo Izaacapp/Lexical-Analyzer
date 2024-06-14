@@ -1,19 +1,15 @@
-## Homework #2 (Lexical Analyzer)
+### README for Lexical Analyzer Project
 
 ## Description
-
 The goal of this project is to develop a lexical analyzer that processes source code, identifies lexical errors, and generates a detailed token list. The analyzer scans the input source file, identifies valid lexemes, classifies them into appropriate tokens, and reports any lexical errors found during the scanning process. This project highlights the essential role of lexical analysis in compiler design, transforming high-level code into a format that can be easily processed by the next stages of compilation.
 
 ## Compilation Instructions
-
 To compile the lexical analyzer, use the following command:
-
 ```bash
 gcc -g -Wall -Wextra lex.c -o lex
 ```
 
 ## Usage
-
 To execute the lexical analyzer and compare the output with expected results, use the following commands:
 
 ```bash
@@ -31,7 +27,6 @@ diff temp_output3.txt output3.txt
 
 Example:
 **Input (input1.txt)**:
-
 ```css
 var x, y;
 begin
@@ -41,7 +36,6 @@ end.
 ```
 
 **Output (output1.txt)**:
-
 ```css
 Source Program:
 var x, y;
@@ -76,12 +70,10 @@ Token List:
 ```
 
 ## Team Information (if applicable)
-
 Team Member 1: Devon Villalona (de167342@ucf.edu)  
 Team Member 2: Izaac Plambeck (iz596192@ucf.edu)
 
 ## Contact Information
-
 For any questions or issues, please contact:
 
 Name: Devon Villalona  
