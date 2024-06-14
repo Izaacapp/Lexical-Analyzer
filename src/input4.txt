@@ -1,0 +1,13 @@
+var x8x8x8x, y;
+: =
+><<><>>
+/*some content
+/ *not a comment*/
+var abcdefghijklmnop;
+x := 123456;
+x := y @ 2;
+var x, y;
+begin
+y := 123;
+x := y + 56789;
+end.
