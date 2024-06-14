@@ -25,7 +25,6 @@ diff temp_output3.txt output3.txt
 
 ## Example
 
-Example:
 **Input (input1.txt)**:
 ```css
 var x, y;
