@@ -1,4 +1,4 @@
-### README for Lexical Analyzer Project
+### Homework #2 (Lexical Analyzer)
 
 ## Description
 The goal of this project is to develop a lexical analyzer that processes source code, identifies lexical errors, and generates a detailed token list. The analyzer scans the input source file, identifies valid lexemes, classifies them into appropriate tokens, and reports any lexical errors found during the scanning process. This project highlights the essential role of lexical analysis in compiler design, transforming high-level code into a format that can be easily processed by the next stages of compilation.
