@@ -68,7 +68,7 @@ Token List:
 29 2 x 17 2 y 18 21 2 y 20 3 3 18 2 x 20 2 y 4 3 56 18 22 19
 ```
 
-## Team Information (if applicable)
+## Team Information 
 Team Member 1: Devon Villalona (de167342@ucf.edu)  
 Team Member 2: Izaac Plambeck (iz596192@ucf.edu)
 
