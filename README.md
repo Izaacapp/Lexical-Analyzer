@@ -120,7 +120,6 @@ Token List:
 
 #### Submission:
 
-Submit the following files on the Webcourse platform:
 1. `lex.c` - The source code.
 2. `readme.txt` - This readme file.
 3. `input1.txt`, `input2.txt`, `input3.txt` - The input files used for testing.
