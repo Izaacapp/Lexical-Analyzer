@@ -21,7 +21,7 @@ diff temp_output1.txt output.txt
 ## Example
 
 #### Input
-**input1.txt**:
+**input.txt**:
 ```plaintext
 var x8x8x8x, y;
 : =
@@ -39,7 +39,7 @@ end.
 ```
 
 #### Output
-**output1.txt**:
+**output.txt**:
 ```plaintext
 Source Program:
 var x8x8x8x, y;
